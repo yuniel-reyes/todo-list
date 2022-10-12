@@ -1,4 +1,8 @@
 import './style.css';
+import { newToDoBtn } from './domWork.js'
 
-console.log("hello");
-console.log("Hi!")
+
+
+// render
+// document.body.appendChild(createList());
+document.body.appendChild(newToDoBtn());
