@@ -7,33 +7,41 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
 <body>
-    <div id="content"></div>
+    <div id="app">
 
-    <div class="sidebar">
-        <div class="todo-header">
-            <h1>TODO-LIST</h1>
+        <div class="title-headers">
+            <div class="title inbox-header" style="visibility: hidden;">Inbox</div>
+            <div class="title today-header" style="visibility: hidden;">Today</div>
+            <div class="title this-week-header" style="visibility: hidden;">This Week</div>    
         </div>
-        <div class="inbox icon-container">
-            <img src="<%= require('/src/img/taskInbox.png') %>" alt="inbox-icon" class="inbox-icon"> 
-            <span>Inbox</span>
-        </div>
-        <div class="today icon-container">
-            <img src="<%= require('/src/img/today.png')%>" alt="today-icon" class="today-icon">
-            <span>Today</span>
-        </div>
-        <div class="this-week icon-container">
-            <img src="<%= require('/src/img/week.png') %>" alt="week-icon" class="week-icon">
-            <span>This week</span>
-        </div>
-        <!-- <br> -->
-        <hr>
-        <div class="new-projects icon-container">
-            <img src="<%= require('/src/img/add.png')%>" alt="">
-            <span>New Projects</span>
-        </div>
+    
+        <div class="sidebar">
+            <div class="todo-header">
+                <h1>TODO-LIST</h1>
+            </div>
+            <div class="inbox icon-container">
+                <img src="<%= require('/src/img/taskInbox.png') %>" alt="inbox-icon" class="inbox-icon"> 
+                <span>Inbox</span>
+            </div>
+            <div class="today icon-container">
+                <img src="<%= require('/src/img/today.png')%>" alt="today-icon" class="today-icon">
+                <span>Today</span>
+            </div>
+            <div class="this-week icon-container">
+                <img src="<%= require('/src/img/week.png') %>" alt="week-icon" class="week-icon">
+                <span>This week</span>
+            </div>
+            <hr>
+            <div class="new-projects icon-container">
+                <img src="<%= require('/src/img/add.png')%>" alt="">
+                <span>New Projects</span>
+            </div>
+        </div> 
+
+        <div id="content"></div>
     </div>
 
-<div class="footer-container">
+<div class="footer-container"> 
     <footer>Footer</footer>
 </div>
 </body>

@@ -1,51 +1,50 @@
-import {format, compareAsc} from 'date-fns'
-import { newToDoBtn, removeNewTaskIfEmpty } from './domWork';
+// import {format, compareAsc} from 'date-fns'
+// import { newToDoBtn, removeNewTaskIfEmpty } from './domWork';
 
 
-// Create an module to store todos for now  
-const ToDos = (() => {
-    // return array of todos
-    return {
-        todos: [],
-    }
+// // Create an module to store todos for now  
+// const ToDos = (() => {
+//     // return array of todos
+//     return {
+//         todos: [],
+//     }
 
-})();
+// })();
 
-// create todos class
-class todoItem {
-    constructor(title, description = "", 
-    dueDate=format(new Date(2014, 1, 11), 'MM/dd/yyyy'), priority=`priority['heigh']`, ) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.priority = {
-            'heigh': 'red',
-            'medium': 'green',
-            'low': 'black',
-        };
-    }  
-}
+// // create todos class
+// class todoItem {
+//     constructor(title, description = "", 
+//     dueDate=format(new Date(2014, 1, 11), 'MM/dd/yyyy'), priority=`priority['heigh']`, ) {
+//         this.title = title;
+//         this.description = description;
+//         this.dueDate = dueDate;
+//         this.priority = {
+//             'heigh': 'red',
+//             'medium': 'green',
+//             'low': 'black',
+//         };
+//     }  
+// }
 
 
-// collect todo info and call the 
-// renderNewTodos() function
-const collectData = (text) => {
-    // e.preventDefault();
+// // collect todo info and call the 
+// // renderNewTodos() function
+// const collectData = (text) => {
+//     // e.preventDefault();
     
-    const title = text;
-    const newTask = new todoItem(title);
+//     // const title = text;
+//     const newTask = new todoItem(text);
 
-    console.log(text);
-    console.log(newTask);
-    // console.log(ToDos.todos)
-    // ToDos.todos.push(newTask);
-    // renderNewTodos();
-    return; 
+//     // console.log(newTask);
+//     ToDos.todos.push(newTask);
+//     console.log(ToDos);
 
-}
+//     return; 
+
+// }
 
 
-export {
-    collectData,
-    ToDos,
-}
+// export {
+//     collectData,
+//     ToDos,
+// }

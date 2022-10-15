@@ -1,8 +1,9 @@
+import App from './App';
 import './style.css';
-import { newToDoBtn } from './domWork.js'
+import UI from './UI.js';
 
 
 
-// render
-// document.body.appendChild(createList());
-document.body.appendChild(newToDoBtn());
+const root = document.getElementById('app');
+const app = new App(root);
+

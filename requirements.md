@@ -60,12 +60,37 @@ The core of the project is how todo-items are going to be designed:
        - add button
 
 The app will have a static/fixed UI
- - A sidebar to the left with:
- a. inbox
- b. today
- c. thisweek
- d. projects
- e. add projects button
+ - A sidebar to the left with:  
+    a. *inbox* : 
+      - When a user opens the app, the inbox
+       (default project) will appear as selected. 
+        So it will be like the home.
+      - Here will be rendered all todos from memory  
+      `TODO`: 
+        - create `inbox()`:
+         - This function will be called a) when the 
+          user opens the app, b) when the user clicks
+          on *inbox*. 
+         - So, add event listener to *inbox* div:
+           - check if open app or comming from
+             another tab. If open app, the event object
+             will be undefined(no click).
+             Comming from another tab:
+              -  remove selected class from any other tab/div
+             And:
+              - toggle the selected class for the inbox
+              div.
+              - toggle the visible value for inbox visibility
+              - check if todos in memory (see localstorage)
+              - render todos from memory if any
+              - render `newToDoBtn()`
+              - call `updateStatus()`
+
+ 
+    b. *today*
+    c. *thisweek*
+    d. *projects* - add projects button
+ - A footer
 
 
 
@@ -75,8 +100,39 @@ available height in the page
 2. Set css up to make the body a grid with 3 colums and 2 rows 
 
                     
-*Discoveries*: 
+*Discoveries* : 
  - Span tags can be editable: contanteditable=true
+ - In order to render images using the the template 
+   option of the of the html-webpack-plugin, you have to
+   use: <%= require() %>. The <%=%> means this is a 
+   lodash template. The require() allows to call the 
+   specific file loader on the img(path)
+ - Searching for a way to organize the code
+   1. MVC
+   2. Web components  
+*Questions* :
+  - Can a module function (module pattern)
+    take another function or a class as an argument 
+
+
+Lets implement it using the MVC pattern
+Model: Reponsible for getting and manipulating the data
+       CRUD interaction
+       Communicates with the controller
+       Some say can sometimes update the View, some say it never touches
+
+View: What the end user see(UI)
+      Commnicates with the controller
+      Can be passed dynamic values from the controller
+      Usually relies on a template engine: dynamic data
+      The view never touches the model
+
+Controller: Receives input (from view, url)
+            Processes request (GET POST PUT DELETEs)    
+            Request/Get data through the model
+            Updates de view in most cases
+            Passes data to the view
+ 
 
 
 
