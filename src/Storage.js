@@ -9,4 +9,19 @@ export default class _Storage {
 
     }
 
+        // initialization of the app storage
+        static initStorage(inbox, today, week) {
+
+            const allProjects = _Storage.getAllProjects();
+    
+            if (allProjects.length == 0) {
+    
+                allProjects.push(inbox, today, week);
+                localStorage.setItem("allProjects", JSON.stringify(allProjects));
+            }
+            return;
+    
+        }
+    
+
 }
