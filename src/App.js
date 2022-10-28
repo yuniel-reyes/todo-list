@@ -17,6 +17,25 @@ export default class App {
         _Storage.initStorage(this.inbox_project, this.today_project, this.week_project);
 
     }
+
+    handlers() {
+        return {
+
+            // createTask gets the value pass into it (the
+            // title of the task entered by the user, the 
+            // current project and create a new todo)
+            // it them add that todo to the corresponding project
+            createTaskUI(title, project_name) {
+                const newTask = new ToDos(title, project_name, Math.trunc(Math.random()*1000));
+                _Storage.saveToDo(newTask);
+                return newTask.id;
+            },
+
+        }
+
+    }
+
+
 }
 
 

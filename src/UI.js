@@ -19,7 +19,9 @@ export default class UI {
         ProjectSeparator: document.querySelector('.for-projects-separator')
     };
 
-    constructor() { 
+    constructor({createTaskUI,}) {
+        
+        UI.prototype.createTaskUI = createTaskUI;
 
         this.listeners = (() => {
             UI.nodeRef.theInboxTab.addEventListener('click', UI.inbox);
@@ -71,6 +73,28 @@ export default class UI {
         UI.nodeRef.content.appendChild(newTaskContainer)
 
     }
+
+    // save todo to the storage
+    static setToDo(e) {
+
+        if (e.target.textContent == "") {
+            e.target.parentElement.remove();
+            UI.checkForNewTaskBtn();
+        } else {
+            if (e.currentTarget.firstChild.firstChild.id == "X") {
+                const todoId = UI.prototype.createTaskUI(e.target.textContent, UI.getCurrentPage());
+                UI.updateId(todoId);
+                UI.checkForNewTaskBtn();
+            } else { // it has an id
+                // console.log(e.currentTarget.firstChild.firstChild.id)
+                // console.log(e.currentTarget.lastChild.textContent);
+                UI.prototype.updateContentUI(e.currentTarget.firstChild.firstChild.id, e.currentTarget.lastChild.textContent);
+                UI.checkForNewTaskBtn();    
+            }
+        }
+        return
+    }
+
             
     // if editing a task, a button for a new on
     //  will be there. So always check if a button
