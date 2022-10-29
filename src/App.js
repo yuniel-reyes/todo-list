@@ -14,6 +14,7 @@ export default class App {
         this.view = new UI(this.handlers()); // Project.projects
 
         // initialize the storage and pass default projects
+        localStorage.clear()
         _Storage.initStorage(this.inbox_project, this.today_project, this.week_project);
 
     }
@@ -31,14 +32,18 @@ export default class App {
                 return newTask.id;
             },
 
+            getNotDefaultProjectsUI: _Storage.getNotDefaultProjects,
+
             getProjectTodosUI: _Storage.getProjectTodos,
 
-            createNewProjectUI(project_name){
+            createNewProjectUI(project_name) {
                 const newProject = new Project(project_name);
                 _Storage.saveProject(newProject);
                 // Project.addNewProjectToArray(newProject);
                 // console.log(Project.projects);
-            }
+            },
+
+            removeProjectUI: _Storage.removeProject,
         }
 
 

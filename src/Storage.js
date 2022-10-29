@@ -9,6 +9,23 @@ export default class _Storage {
 
     }
 
+    static getNotDefaultProjects() {
+        const notDefaulProjects = JSON.parse(localStorage.getItem("allProjects"));
+
+        let thisProjects = [];
+
+       notDefaulProjects.forEach(project => {
+
+            if ((project.project_name != "inbox") &&
+               (project.project_name != "today") && 
+               (project.project_name != "this_week"))  {
+                thisProjects.push(project);
+               }
+
+        });
+        return thisProjects;
+    }
+
     // initialization of the app storage
     static initStorage(inbox, today, week) {
 
@@ -73,9 +90,15 @@ export default class _Storage {
 
     }
 
+    // remove project
+    static removeProject(project_name) {
 
+        const allProjects = _Storage.getAllProjects();
 
+        const ProjectIndex = allProjects.findIndex(element => element.project_name == project_name);
+        allProjects.splice(ProjectIndex, 1);
 
-    
+        localStorage.setItem("allProjects", JSON.stringify(allProjects));
+    }    
 
 }

@@ -27,12 +27,13 @@ todo-list: Todo list app created with HTML, CSS and JS
 
 ## Picked design
   + Lets try to develop the app following something similar 
-  to the MVC pattern.
+  to the MVC pattern. There will be two more files
+  as part of the logic -- Storage and Projects
 
 
 ## Functional requirements
 ---------------------------  
-**Logic | Controller and Model: App.js and model.js files**
+**Logic | Controller and Model (Project + Storage): App.js and model.js files**
 
 **App.js**
   * The `App.js` file will be the controller. It will
@@ -44,6 +45,7 @@ todo-list: Todo list app created with HTML, CSS and JS
   with full of functions. This functions will be 
   use to connect the model and the view, but allways
   through the controller (App.js).
+  `createNewProjectUI()`: 
   
 **model.js**
   - The `model.js` file will be the model.
@@ -55,6 +57,36 @@ todo-list: Todo list app created with HTML, CSS and JS
   - priority
 
 
+**Projects**
+  + The `Projects.js` file will contain the 
+  class `Project` for every default-created project
+  (*inbox*, *today*, *thisweek*), and future projects of the users.
+  + As default projects, *inbox*, *today* and *this-week*, will never be deleted.
+  + For now, every added project will be store in an array --projects.
+  + As instance properties, add project_name and project_todos
+  + As instance method, add `addTodo()`. This method
+  will add the new task to the corresponding todo list. 
+
+  *inbox and its connection to inbox-project*:
+  + See `inbox()` in *UX-UI* to understand what 
+  the method does until it connects withe the Project/Storage
+  functionality. 
+  + This is where the `inbox()` method and the project/storage functionalities 
+  connect. When calling the `inbox()` method, todos of all projects (not today 
+  and thisweek) need to be rendered into the page. With that goal in
+  mind, `inbox()` call `renderProjectTodos()`
+    `renderProjectTodos()`: First, it gets the current
+    tab/page, meaning, the current project. It then call
+    the function `getAllTodosUI()`, which is a method of
+    the `_Storage` class passed through the `App` class
+    (see it there).
+    The return value is an array according to the 
+    current page parameter.
+
+
+**_Storage**
+
+
 
 **UX-UI (DOM)**
 **UI.js** 
@@ -64,15 +96,15 @@ todo-list: Todo list app created with HTML, CSS and JS
   - When the `UI` is instantiated in the `App` 
   class, some compenents are immediately
   rendered on the page. However, other components
-  are added using the template file of the html-webpack-pugin.   This means that the app will have a static/fixed UI:
+  are added using the template file of the html-webpack-pugin.   
+  This means that the app will have a static/fixed UI:
  - A `sidebar` to the left with:  
     b. *today*
     c. *thisweek*
     d. *projects* - add projects button
  - And a footer
  - The three first options in the sidebar are
-  projects. A project is a list of todos
-  See **Project**.
+  projects. A project is a list of todos  (see **Project**)
  - Inside the `UI` class:
   *pageState*: 
    *nodeRef*:
@@ -81,7 +113,6 @@ todo-list: Todo list app created with HTML, CSS and JS
    *addNewTask*:
    *checkForNewTaskBtn*
    *inbox*
-   *today*:
       + `inbox()` is the name of the static method
       that gets called when the only `UI` object its
       instantiated. 
@@ -90,7 +121,7 @@ todo-list: Todo list app created with HTML, CSS and JS
       + Inside `inbox()`, the first thing is crating a
       variable and putting the state of the inbox property. I 
       use an object to store where the user is at the moment,
-      menaing, seeing the content of the project inbox
+      meanaing, seeing the content of the project inbox
       is as being on the inbox page and so on.
       + Then, create variable that will be passed to
       the function `updateStatus()`.
@@ -107,35 +138,35 @@ todo-list: Todo list app created with HTML, CSS and JS
       for each of children that has that class active.
       + Call `showHeader()` and show tab header according 
       to current tab.
-      *updateStatus*: 
+      *today*:
+      *updateStatus*:
+      *getCurrentPage*: 
+      *removeNewProjectDiv*: 
+       + It hides the button New Projects,
+      *renderNewProject*: 
+       + It adds the new project on the page
+       + Event handler need to be added: 
+         - remove project
+         - render todo projects 
+      *checkIfProject*: 
+       + It checks if the user has entered a name for a
+       project. If true, the callback function call
+       `createNewProjectUI()`, a function that comes
+       from the App class (see it there).
+       + Then it call `renderNewProject()`.
+       + It remove the input and make the button 
+       for new projects visible 
+      *addInputProjectName*:
+       + It creates and add the input to enter the project name
+       + It add the event handler `checkIfProject()`.  
+      *newProjects*:
+        + Project are added when the newProjects button is clicked. 
+    The `newProjects()` callback function call two functions:
+    `removeNewProjectDiv()` and `addInputProjectName()`.
+ 
 
 
-**Projects**
-  + The `Projects.js` file will contain the 
-  class `Project` for every default-created project
-  (*inbox*, *today*, *thisweek*), and future projects of the users.
-  + As default projects, *inbox*, *today* and *this-week*, will never be deleted.
-  + For now, every added project will be store in an array --projects.
-  + As instance properties, add project_name and project_todos
-  + As instance method, add `addTodo()`. This method
-  will add the new task to the corresponding todo list. 
 
-  Lets start with *inbox* and its connection 
-  to inbox-project:
-  + See `inbox()` in *UX-UI* to understand what 
-  the method does until it connects withe the Project/Storage
-  functionality. 
-  + ...
-  + This is where the `inbox()` method and the project/storage functuonalities connect. When calling the `inbox()` method, todos of all projects (not today and thisweek) need to be rendered into the page. With that goal in
-  mind, `inbox()` call `renderProjectTodos()`
-    `renderProjectTodos()`: First, it gets the current
-    tab/page, meaning, the current project. It then call
-    the function `getAllTodosUI()`, which is a function of
-    the `_Storage` class passes through the `App` class.
-    Then, all todos are mapped searching for the current
-    project. An array with all todos from the current tab
-    is then looped, and for each todo a task in rendered
-    on the page. This is a temporary logic, as inbox, for example, shows all the todos from all projects. 
 
 
 

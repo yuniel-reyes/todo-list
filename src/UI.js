@@ -1,4 +1,5 @@
 import listicon from './img/list.png';
+import removeIcon from './img/remove.png';
 
 export default class UI {
     
@@ -19,17 +20,24 @@ export default class UI {
         ProjectSeparator: document.querySelector('.for-projects-separator')
     };
 
-    constructor({createTaskUI, getProjectTodosUI, createNewProjectUI}) {
+    constructor({createTaskUI, getProjectTodosUI, createNewProjectUI, 
+        getNotDefaultProjectsUI, removeProjectUI}) {
         
         UI.prototype.createTaskUI = createTaskUI;
+        UI.prototype.getProjectTodosUI = getProjectTodosUI;
+        UI.prototype.createNewProjectUI = createNewProjectUI;
+        UI.prototype.getNotDefaultProjectsUI = getNotDefaultProjectsUI;
+        UI.prototype.removeProjectUI = removeProjectUI;
 
         this.listeners = (() => {
-            UI.nodeRef.theInboxTab.addEventListener('click', UI.inbox);
+            UI.nodeRef.theInboxTab.addEventListener('click', UI.inbox); 
             UI.nodeRef.theTodayTab.addEventListener('click', UI.today);
             UI.nodeRef.theWeekTab.addEventListener('click', UI.thisWeek);
+            UI.nodeRef.newProjects.addEventListener('click', UI.newProjects);
         })();
 
         UI.inbox();
+        UI.renderProjectsOnReload();
     }
     
    // create add task button 
@@ -95,6 +103,11 @@ export default class UI {
         return
     }
 
+    static updateId(todoId) {
+        const updadeThisId = document.querySelectorAll('.new-todo-container');
+        updadeThisId[updadeThisId.length - 1].firstChild.firstChild.id = todoId
+        return;
+    }
             
     // if editing a task, a button for a new on
     //  will be there. So always check if a button
@@ -125,14 +138,18 @@ export default class UI {
                 }
             }
 
-            // update the state of the current page
-            UI.updateState(currentPage);
+            // // update the state of the current page
+            // UI.updateState(currentPage);
 
             // show inbox tab as selected 
             UI.nodeRef.theInboxTab.classList.toggle('selected');
 
-            // call show project header function
-            UI.showHeader(currentPage);
+            // // call show project header function
+            // UI.showHeader(currentPage);
+
+            // render all todos
+            UI.renderProjectTodos(currentPage);
+
         
             // render the new task button
             if (UI.nodeRef.content.children.namedItem('new-todo-btn-container') == null) {
@@ -145,14 +162,17 @@ export default class UI {
     }
 
     // render todos of current project
-    static renderProjectTodos() {
+    static renderProjectTodos(currentPage) {
 
-        const currentPage = UI.getCurrentPage();
+        // update the state of the current page
+        UI.updateState(currentPage);
+
+        // call show project header function
+        UI.showHeader(currentPage);
+
+
 
         const thisTodos = UI.prototype.getProjectTodosUI(currentPage);
-        // console.log(thisTodos);
-
-
 
         thisTodos.forEach(eachTodo => {
 
@@ -176,7 +196,7 @@ export default class UI {
         })
 
     }
-    
+
     // show project header   
     static showHeader(currentPage) {
         for (const titleChildren of UI.nodeRef.titleHeaders.children) {
@@ -251,25 +271,74 @@ export default class UI {
         UI.nodeRef.newProjects.style.visibility = 'hidden';
     }
 
+    // render projects on input
     static renderNewProject(projectName) {
 
-        const ProjectContainer = document.createElement('div');
-        // ProjectContainer.addEventListener('click', function(e) {
-        //     deleteProject,
-
-        // });
-        ProjectContainer.setAttribute('class', `project-container ${projectName}`);
-        const icon = document.createElement('img');
-        icon.setAttribute('src', listicon);
-        const projectNameText = document.createElement('span');
-        projectNameText.textContent = projectName;
-        ProjectContainer.appendChild(icon);
-        ProjectContainer.appendChild(projectNameText);
-
-        UI.nodeRef.ProjectSeparator.insertAdjacentElement('afterend', ProjectContainer);
-        
+        UI.renderProjectBox(projectName);           
     }
 
+    // render projects when reloading page
+    static renderProjectsOnReload() {
+
+        const thisProjects = UI.prototype.getNotDefaultProjectsUI();
+        console.log(thisProjects);
+        thisProjects.forEach(eachProject => {
+            UI.renderProjectBox(eachProject.project_name);   
+        })
+    }
+
+    static removeProjectfromSideBar(project) {
+        for (const eachChild of UI.nodeRef.theSideBar.children) {
+            if (eachChild.id == project) {
+                eachChild.remove();
+            }
+        }
+    }
+    
+    static removeProjectState(project) {
+        delete UI.pageState[project];
+        console.log(UI.pageState);
+    }
+
+
+    static renderProjectBox(project) {
+        const ProjectContainer = document.createElement('div');
+        ProjectContainer.addEventListener('click', (e) => {
+            // UI.renderProjectTodos()
+            console.log(e.currentTarget.id)
+            console.log(UI.pageState);
+        });
+        ProjectContainer.setAttribute('id', `${project}`);
+        ProjectContainer.setAttribute('class', 'project-container');
+        
+        const icon = document.createElement('img');
+        icon.setAttribute('src', listicon);
+
+        const removeProjectContainer = document.createElement('div');
+        removeProjectContainer.setAttribute('class', 'remove-container');
+        const removeProject = document.createElement('img');
+        removeProject.setAttribute('class', 'icon-remove');
+        removeProject.setAttribute('id', `${project}`);
+        removeProject.setAttribute('src', removeIcon);
+        removeProject.addEventListener('click', (e) => {
+            UI.prototype.removeProjectUI(e.target.id);
+            UI.removeProjectfromSideBar(e.target.id);
+            // remove project from state
+            UI.removeProjectState(project);
+        });
+        removeProjectContainer.appendChild(removeProject);
+
+        const textContainer = document.createElement('div');
+        textContainer.setAttribute('class', 'text-container')
+        const projectNameText = document.createElement('span');
+        projectNameText.textContent = project;
+        textContainer.appendChild(projectNameText);
+        ProjectContainer.appendChild(icon);
+        ProjectContainer.appendChild(textContainer);
+        ProjectContainer.appendChild(removeProjectContainer)
+
+        UI.nodeRef.ProjectSeparator.insertAdjacentElement('afterend', ProjectContainer);
+    }
 
     static checkIfProject(e) {
         if (e.target.value == "") {
@@ -281,6 +350,9 @@ export default class UI {
             UI.prototype.createNewProjectUI(e.target.value);
             // render project on page
             UI.renderNewProject(e.target.value);
+
+            // create page and state
+            UI.pageState[e.target.value] = false;
 
             // remove input box
             e.target.parentElement.parentElement.remove();

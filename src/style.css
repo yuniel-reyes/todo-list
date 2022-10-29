@@ -140,12 +140,6 @@ div.input-container input {
 
 /* PROJECT CONTIANER */
 div.project-container {
-    margin: 4px;
-    margin-left: 15px;
-    display: flex;
-    justify-content: flex-start;
-    display: flex;
-    align-items: center;
     height: 40px;
 }
 
@@ -154,6 +148,11 @@ div.project-container:hover {
     border-radius: 4px;
     background-color: white;
     cursor: pointer;
+}
+
+div.remove-container {
+    justify-content: end;
+    margin-right: 40px;
 }
 
 /* FOOTER */
