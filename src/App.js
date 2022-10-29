@@ -31,10 +31,18 @@ export default class App {
                 return newTask.id;
             },
 
+            getProjectTodosUI: _Storage.getProjectTodos,
+
+            createNewProjectUI(project_name){
+                const newProject = new Project(project_name);
+                _Storage.saveProject(newProject);
+                // Project.addNewProjectToArray(newProject);
+                // console.log(Project.projects);
+            }
         }
 
-    }
 
+    }
 
 }
 

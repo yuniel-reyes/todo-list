@@ -38,6 +38,30 @@ export default class _Storage {
          // console.log(newTask.project_name);
     }
 
+    // get todos of a project
+    static getProjectTodos(project_name) {
+
+        const allProjects = _Storage.getAllProjects();
+        let thisTodos = [];
+        // console.log(allProjects)
+
+        allProjects.forEach(eachArray => {
+                if (project_name == "inbox" && (eachArray.project_name !== "today" && 
+                    eachArray.project_name !== "this_week")) {
+                    eachArray.project_todos.forEach(element => {
+                        thisTodos.push(element);
+                    });
+                } else if (eachArray.project_name == project_name) {
+                    thisTodos.push(project_todos);
+                }
+        })
+
+        return thisTodos;
+
+    }
+
+
+
 
     
 
