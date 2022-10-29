@@ -23,6 +23,19 @@ export default class _Storage {
 
     }
 
+    static saveProject(project) {
+    
+        const allProjects = _Storage.getAllProjects();
+
+        // console.log(allProjects);
+        // console.log(allProjects.length);
+
+        allProjects.push(project);
+
+        localStorage.setItem("allProjects", JSON.stringify(allProjects));
+    }
+
+
     static saveToDo(newTask) {
 
         const allProjects = _Storage.getAllProjects();
