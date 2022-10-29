@@ -244,4 +244,80 @@ export default class UI {
             }
         }
     }
+
+
+    // ======PROJECTS======
+    static removeNewProjectDiv() {
+        UI.nodeRef.newProjects.style.visibility = 'hidden';
+    }
+
+    static renderNewProject(projectName) {
+
+        const ProjectContainer = document.createElement('div');
+        // ProjectContainer.addEventListener('click', function(e) {
+        //     deleteProject,
+
+        // });
+        ProjectContainer.setAttribute('class', `project-container ${projectName}`);
+        const icon = document.createElement('img');
+        icon.setAttribute('src', listicon);
+        const projectNameText = document.createElement('span');
+        projectNameText.textContent = projectName;
+        ProjectContainer.appendChild(icon);
+        ProjectContainer.appendChild(projectNameText);
+
+        UI.nodeRef.ProjectSeparator.insertAdjacentElement('afterend', ProjectContainer);
+        
+    }
+
+
+    static checkIfProject(e) {
+        if (e.target.value == "") {
+            // remove input-container
+            e.target.parentElement.parentElement.remove();
+            UI.nodeRef.newProjects.style.visibility = 'visible';
+        } else {
+            // create new project
+            UI.prototype.createNewProjectUI(e.target.value);
+            // render project on page
+            UI.renderNewProject(e.target.value);
+
+            // remove input box
+            e.target.parentElement.parentElement.remove();
+            UI.nodeRef.newProjects.style.visibility = 'visible';
+
+
+            // UI.newProjectsFunctions[e.target.value] = UI.addNewProject;
+            // UI.newProjectsFunctions['Gym']();
+            // UI.addNewProject();
+        } 
+    }
+
+
+    static addInputProjectName() {
+        const inputProjectContainer = document.createElement('div');
+        inputProjectContainer.setAttribute('class', 'input-container');
+        const label = document.createElement('label');
+        label.setAttribute('for', 'projec-name');
+
+        const projectInput = document.createElement('input');
+        projectInput.className = 'project-input';
+        projectInput.addEventListener('blur', UI.checkIfProject);
+        projectInput.type = 'text';
+        // projectInput.id = 'prject-name';
+        // projectInput.name = 'project-name';
+        label.appendChild(projectInput);
+        inputProjectContainer.appendChild(label);
+
+
+        UI.nodeRef.ProjectSeparator.insertAdjacentElement('afterend', inputProjectContainer);
+        projectInput.focus();
+    }
+
+    static newProjects() {
+        // remove new project div
+        UI.removeNewProjectDiv();
+        // add input for project name
+        UI.addInputProjectName();
+    }
 }
