@@ -19,7 +19,7 @@ export default class UI {
         ProjectSeparator: document.querySelector('.for-projects-separator')
     };
 
-    constructor({createTaskUI,}) {
+    constructor({createTaskUI, getProjectTodosUI, createNewProjectUI}) {
         
         UI.prototype.createTaskUI = createTaskUI;
 
@@ -141,6 +141,39 @@ export default class UI {
 
             return UI.nodeRef.theSideBar;
         } 
+
+    }
+
+    // render todos of current project
+    static renderProjectTodos() {
+
+        const currentPage = UI.getCurrentPage();
+
+        const thisTodos = UI.prototype.getProjectTodosUI(currentPage);
+        // console.log(thisTodos);
+
+
+
+        thisTodos.forEach(eachTodo => {
+
+            const newTaskContainer = document.createElement('div');
+            newTaskContainer.classList.add('new-todo-container')
+            newTaskContainer.addEventListener('blur', UI.addOrCall, true);
+        
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = eachTodo.id;
+            label.appendChild(input);
+            
+            const editableTaskSpan = document.createElement('span');
+            editableTaskSpan.contentEditable = "true";
+            editableTaskSpan.classList.add('editable-span');
+            editableTaskSpan.textContent = eachTodo.title;
+            newTaskContainer.appendChild(label);
+            newTaskContainer.appendChild(editableTaskSpan);
+            UI.nodeRef.content.appendChild(newTaskContainer)
+        })
 
     }
     
