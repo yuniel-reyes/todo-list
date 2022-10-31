@@ -39,6 +39,10 @@ html, body {
     padding-left: 20px;
 }
 
+#content img {
+    width: 51%;
+}
+
 /* ENTER NEW TASK BUTTON */
 input[type='button'] {
     width: 480px;
@@ -54,13 +58,15 @@ input[type='button'] {
 .new-todo-container {
     display: flex;
     background-color: rgb(235 230 230);
-    width: 490px;
-    padding: 5px 0 5px 5px
+    width: 532px;
+    padding: 5px 0 5px 5px;
+    align-items: center;
 }
 
 .editable-span {
+    display: inline-block;
     border: 1px solid black;
-    width: 120px;
+    width: 330px;
     flex-basis: 300px;
 }
 
@@ -70,6 +76,12 @@ input[type='button'] {
     outline: none;
     padding-left: 4px;
 }
+
+.remove-icon-container {
+    display: flex;
+    justify-content: center;
+}
+
 
 /* SIDEBAR */
 .sidebar {
@@ -137,7 +149,7 @@ div.input-container input {
     font-size: 17px;
 }
 
-/* PROJECT CONTIANER */
+/* PROJECT CONTAINER */
 div.project-container {
     height: 40px;
 }
@@ -163,8 +175,9 @@ div.remove-container {
 
 div.remove-container img {
     margin-right: 40px;
-
 }
+
+
 
 /* FOOTER */
 .footer-container {

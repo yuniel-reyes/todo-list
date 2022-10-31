@@ -1,5 +1,6 @@
 import listicon from './img/list.png';
 import removeIcon from './img/remove.png';
+import deleteIcon from './img/delete.png';
 
 export default class UI {
     
@@ -63,10 +64,7 @@ export default class UI {
     static addNewTask() {
 
         const newTaskContainer = document.createElement('div');
-        newTaskContainer.classList.add('new-todo-container')
-
-        // create object to get the id value
-        newTaskContainer.addEventListener('blur', UI.setToDo, true);
+        newTaskContainer.classList.add('new-todo-container');
     
         const label = document.createElement('label');
         const input = document.createElement('input');
@@ -75,25 +73,55 @@ export default class UI {
         input.id = "X";
         label.appendChild(input);
         
+        const spanDiv = document.createElement('div');
+        spanDiv.setAttribute('class', 'span-container')
         const editableTaskSpan = document.createElement('span');
         editableTaskSpan.contentEditable = "true";
         editableTaskSpan.classList.add('editable-span');
+        spanDiv.addEventListener('blur', UI.setToDo, true);
+        spanDiv.appendChild(editableTaskSpan);
+
+        const dateDiv = document.createElement('div');
+        dateDiv.setAttribute('class', 'date-container');
+        const dateInput = document.createElement('input')
+        dateInput.setAttribute('type', 'date');
+        dateInput.id = "X";
+
+        const removeDiv = document.createElement('div');
+        removeDiv.setAttribute('class', 'remove-icon-container');
+        const removeIcon = document.createElement('img');
+        removeIcon.setAttribute('src', deleteIcon);
+        removeIcon.setAttribute('id', 'X');
+        removeIcon.setAttribute('data-project', 'X');
+        removeDiv.appendChild(removeIcon);
+
+
+        dateDiv.appendChild(dateInput);
         newTaskContainer.appendChild(label);
-        newTaskContainer.appendChild(editableTaskSpan);
+        newTaskContainer.appendChild(spanDiv);
+        newTaskContainer.appendChild(dateDiv);
+        newTaskContainer.appendChild(removeDiv);
         UI.nodeRef.content.appendChild(newTaskContainer)
+
+        editableTaskSpan.focus();
 
     }
 
     // save todo to the storage
     static setToDo(e) {
 
+        console.log(e.currentTarget.parentElement.lastChild.firstChild);
+        // console.log(e.target.parentElement);
+        // console.log(e.currentTarget.previousSibling.firstChild);
         if (e.target.textContent == "") {
-            e.target.parentElement.remove();
+            e.currentTarget.parentElement.remove();
             UI.checkForNewTaskBtn();
         } else {
-            if (e.currentTarget.firstChild.firstChild.id == "X") {
-                const todoId = UI.prototype.createTaskUI(e.target.textContent, UI.getCurrentPage());
-                UI.updateTodoData(todoId, UI.getCurrentPage());
+            if (e.currentTarget.previousSibling.firstChild.id == "X") {
+                const newTask = UI.prototype.createTaskUI(e.target.textContent, UI.getCurrentPage());
+                // console.log(newTask)
+                // UI.editInfoBox();
+                UI.updateTodoData(newTask.id, UI.getCurrentPage());
                 UI.checkForNewTaskBtn();
             } else { 
                 // console.log(e.currentTarget.firstChild.firstChild.dataset['project']);
@@ -108,8 +136,15 @@ export default class UI {
         const updadeThisId = document.querySelectorAll('.new-todo-container');
         updadeThisId[updadeThisId.length - 1].firstChild.firstChild.id = todoId;
         updadeThisId[updadeThisId.length - 1].firstChild.firstChild.setAttribute('data-project', projectName);
+        updadeThisId[updadeThisId.length - 1].lastChild.firstChild.id = todoId;
+        updadeThisId[updadeThisId.length - 1].lastChild.firstChild.setAttribute('data-project', projectName);
+
         return;
     }
+
+    // static editInfoBox() {
+    //     console.log('Works')
+    // }
 
     // if editing a task, a button for a new on
     //  will be there. So always check if a button
@@ -158,7 +193,7 @@ export default class UI {
     }
 
     // the today method will render todos according to 
-    // its due date. 
+    // its due date
     static today() {
 
         // this will get me the current state of the
@@ -273,7 +308,6 @@ export default class UI {
 
                 const newTaskContainer = document.createElement('div');
                 newTaskContainer.classList.add('new-todo-container')
-                newTaskContainer.addEventListener('blur', UI.setToDo, true);
             
                 const label = document.createElement('label');
                 const input = document.createElement('input');
@@ -282,12 +316,35 @@ export default class UI {
                 input.setAttribute('data-project', eachTodo.project_name);
                 label.appendChild(input);
                 
+
+                const spanDiv = document.createElement('div');
+                spanDiv.setAttribute('class', 'span-container')
                 const editableTaskSpan = document.createElement('span');
                 editableTaskSpan.contentEditable = "true";
                 editableTaskSpan.classList.add('editable-span');
+                spanDiv.addEventListener('blur', UI.setToDo, true);
                 editableTaskSpan.textContent = eachTodo.title;
+                spanDiv.appendChild(editableTaskSpan);
+
+                const dateDiv = document.createElement('div');
+                dateDiv.setAttribute('class', 'date-container');
+                const dateInput = document.createElement('input');
+                dateInput.setAttribute('type', 'date');
+                dateInput.id = "X";
+                dateDiv.appendChild(dateInput);
+
+                const removeDiv = document.createElement('div');
+                removeDiv.setAttribute('class', 'remove-icon-container');
+                const removeIcon = document.createElement('img');
+                removeIcon.setAttribute('src', deleteIcon);
+                removeIcon.setAttribute('id', 'X');
+                removeIcon.setAttribute('data-project', 'X');
+                removeDiv.appendChild(removeIcon);
+        
                 newTaskContainer.appendChild(label);
-                newTaskContainer.appendChild(editableTaskSpan);
+                newTaskContainer.appendChild(spanDiv);
+                newTaskContainer.appendChild(dateDiv);
+                newTaskContainer.appendChild(removeDiv);
                 UI.nodeRef.content.insertAdjacentElement('afterbegin', newTaskContainer);
             });
         }

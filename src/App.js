@@ -29,7 +29,7 @@ export default class App {
             createTaskUI(title, project_name) {
                 const newTask = new ToDos(title, project_name, Math.trunc(Math.random()*1000));
                 _Storage.saveToDo(newTask);
-                return newTask.id;
+                return newTask;
             },
 
             getNotDefaultProjectsUI: _Storage.getNotDefaultProjects,
