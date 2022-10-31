@@ -67,21 +67,17 @@ todo-list: Todo list app created with HTML, CSS and JS
   + As instance method, add `addTodo()`. This method
   will add the new task to the corresponding todo list. 
 
-  *inbox and its connection to inbox-project*:
-  + See `inbox()` in *UX-UI* to understand what 
+  *renderProjectTodos and its connection to projects/storage*:
+  + See `renderProjectTodos()` in *UX-UI* to understand what 
   the method does until it connects withe the Project/Storage
   functionality. 
-  + This is where the `inbox()` method and the project/storage functionalities 
-  connect. When calling the `inbox()` method, todos of all projects (not today 
-  and thisweek) need to be rendered into the page. With that goal in
-  mind, `inbox()` call `renderProjectTodos()`
-    `renderProjectTodos()`: First, it gets the current
-    tab/page, meaning, the current project. It then call
-    the function `getAllTodosUI()`, which is a method of
-    the `_Storage` class passed through the `App` class
-    (see it there).
-    The return value is an array according to the 
-    current page parameter.
+  + This is where the `renderProjectTodos()` method and the
+  project/storage functionalities  connect. When calling the
+   `renderProjectTodos()` method, todos of all projects (not today
+    and thisweek) need to be rendered into the page accoring to
+    the corresponding page. With that goal in
+  mind, `renderProjectTodos()` will loop over the returned 
+  todos and put them on the page.
 
 
 **_Storage**
@@ -99,6 +95,7 @@ todo-list: Todo list app created with HTML, CSS and JS
   are added using the template file of the html-webpack-pugin.   
   This means that the app will have a static/fixed UI:
  - A `sidebar` to the left with:  
+    a. *inbox*
     b. *today*
     c. *thisweek*
     d. *projects* - add projects button
@@ -112,32 +109,25 @@ todo-list: Todo list app created with HTML, CSS and JS
    *newToDoBtn: button component*: 
    *addNewTask*:
    *checkForNewTaskBtn*
-   *inbox*
-      + `inbox()` is the name of the static method
+   *renderProjectTodos*
+      + `renderProjectTodos()` is the name of the static method
       that gets called when the only `UI` object its
       instantiated. 
       + Its used too as a callback function for the 
       tab inbox --if inbox tab is clicked, the inbox method gets called.
-      + Inside `inbox()`, the first thing is crating a
-      variable and putting the state of the inbox property. I 
-      use an object to store where the user is at the moment,
-      meanaing, seeing the content of the project inbox
-      is as being on the inbox page and so on.
-      + Then, create variable that will be passed to
-      the function `updateStatus()`.
-      + I then check if the state of the inbox-page is false.
-      Being true will mean that the user is currently at
-      this page and the `inbox()` method can't be trigger
-      as callback when clicking inbox in the sidebar.
-      + If false and event is undefined, it means that the 
-      page is being loading for the first time. In that case
-      the block of code inside that if isn't run.
-      If false and event, that will mean that the user is comming
-      from another tab, for which then go through each of the 
-      sidebar tab option and toggle the class `.selected` 
-      for each of children that has that class active.
-      + Call `showHeader()` and show tab header according 
-      to current tab.
+      + Inside `renderProjectTodos()`, the first thing is removing all
+      content of the previous view. 
+      Then, I create a to hold the current page, meaning which button
+      the user has clicked. 
+      + As the method handles event objects and strings, I test for that.
+      When deleting any project, the app will back off to the inbox
+      default project. In that case, the `thisPageState` will be undefine.
+      I handle that by testing for it. 
+      + Using that variable, the method show corresponding tab as selected
+      + Then, the status of the current page is updated --`updateStatus()`.
+      + Call `showHeader()` and show tab header according to current tab.
+      + This is where the method connnects witht the _Storage class through 
+      the controller (App). See **Project**
       *today*:
       *updateStatus*:
       *getCurrentPage*: 
@@ -194,7 +184,7 @@ available height in the page
    - Calling a constructor method/function from inside a static method
    - Object destructuring | Destructuring assignment:
      Take the return object from the handlers method and desctructure it
- - Can list comprehensions be done in JS?  
+   - The content value of the display CSS property  
 
 *Questions* :
   - Can a module function (module pattern)
@@ -202,6 +192,9 @@ available height in the page
   - Can I return a value from an event handler function?
   - How do I create functions dynamically?    
   - How do I create variable names dynamically?
+  - Can't event object properties being copied? 
+  - Can list comprehensions be done in JS?  
+
 
 
 Lets implement it using the MVC pattern

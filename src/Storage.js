@@ -82,10 +82,13 @@ export default class _Storage {
                         thisTodos.push(element);
                     });
                 } else if (eachArray.project_name == project_name) {
-                    thisTodos.push(project_todos);
+                    eachArray.project_todos.forEach(element => {
+                        thisTodos.push(element);
+                    });
                 }
         })
-
+        
+        console.log(thisTodos);
         return thisTodos;
 
     }
@@ -99,6 +102,6 @@ export default class _Storage {
         allProjects.splice(ProjectIndex, 1);
 
         localStorage.setItem("allProjects", JSON.stringify(allProjects));
-    }    
+    }
 
 }

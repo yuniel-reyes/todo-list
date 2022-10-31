@@ -29,14 +29,15 @@ export default class UI {
         UI.prototype.getNotDefaultProjectsUI = getNotDefaultProjectsUI;
         UI.prototype.removeProjectUI = removeProjectUI;
 
-        this.listeners = (() => {
-            UI.nodeRef.theInboxTab.addEventListener('click', UI.inbox); 
+        this.listeners = (() => { // UI.inbox
+            UI.nodeRef.theInboxTab.addEventListener('click', UI.renderProjectTodos); 
             UI.nodeRef.theTodayTab.addEventListener('click', UI.today);
             UI.nodeRef.theWeekTab.addEventListener('click', UI.thisWeek);
             UI.nodeRef.newProjects.addEventListener('click', UI.newProjects);
         })();
 
-        UI.inbox();
+        // UI.inbox();
+        UI.renderProjectTodos('inbox');
         UI.renderProjectsOnReload();
     }
     
@@ -93,9 +94,7 @@ export default class UI {
                 const todoId = UI.prototype.createTaskUI(e.target.textContent, UI.getCurrentPage());
                 UI.updateId(todoId);
                 UI.checkForNewTaskBtn();
-            } else { // it has an id
-                // console.log(e.currentTarget.firstChild.firstChild.id)
-                // console.log(e.currentTarget.lastChild.textContent);
+            } else { 
                 UI.prototype.updateContentUI(e.currentTarget.firstChild.firstChild.id, e.currentTarget.lastChild.textContent);
                 UI.checkForNewTaskBtn();    
             }
@@ -120,92 +119,39 @@ export default class UI {
         }
     }
 
-    // select tab
-    static inbox(event) {
-
-        // this will get me the current state of the
-        // inbox tab / page. It will be false at first
-        const inboxState = UI.pageState.inbox;
-        const currentPage = 'inbox';
-    
-        // run if only tab is not open 
-        if (inboxState == false) {
-
-            // this could be a function: remove selected
-            for (const eachChild of UI.nodeRef.theSideBar.children) {
-                if (eachChild.classList.contains('selected')) {
-                    eachChild.classList.toggle('selected');
-                }
+    // remove content when loading projects
+    static removeContentChildren() {
+        for (const eachChildren of Array.from(UI.nodeRef.content.children)) {
+            if (eachChildren.className == 'new-todo-container') {
+                eachChildren.remove();
             }
-
-            // // update the state of the current page
-            // UI.updateState(currentPage);
-
-            // show inbox tab as selected 
-            UI.nodeRef.theInboxTab.classList.toggle('selected');
-
-            // // call show project header function
-            // UI.showHeader(currentPage);
-
-            // render all todos
-            UI.renderProjectTodos(currentPage);
-
-        
-            // render the new task button
-            if (UI.nodeRef.content.children.namedItem('new-todo-btn-container') == null) {
-                UI.newToDoBtn();
-            }
-
-            return UI.nodeRef.theSideBar;
-        } 
-
-    }
-
-    // render todos of current project
-    static renderProjectTodos(currentPage) {
-
-        // update the state of the current page
-        UI.updateState(currentPage);
-
-        // call show project header function
-        UI.showHeader(currentPage);
-
-
-
-        const thisTodos = UI.prototype.getProjectTodosUI(currentPage);
-
-        thisTodos.forEach(eachTodo => {
-
-            const newTaskContainer = document.createElement('div');
-            newTaskContainer.classList.add('new-todo-container')
-            newTaskContainer.addEventListener('blur', UI.addOrCall, true);
-        
-            const label = document.createElement('label');
-            const input = document.createElement('input');
-            input.type = 'checkbox';
-            input.id = eachTodo.id;
-            label.appendChild(input);
-            
-            const editableTaskSpan = document.createElement('span');
-            editableTaskSpan.contentEditable = "true";
-            editableTaskSpan.classList.add('editable-span');
-            editableTaskSpan.textContent = eachTodo.title;
-            newTaskContainer.appendChild(label);
-            newTaskContainer.appendChild(editableTaskSpan);
-            UI.nodeRef.content.appendChild(newTaskContainer)
-        })
-
+        }
     }
 
     // show project header   
     static showHeader(currentPage) {
+        let headerExists = false;
+
         for (const titleChildren of UI.nodeRef.titleHeaders.children) {
             if (titleChildren.className.includes(currentPage)) {
+                headerExists = true;
                 titleChildren.style.visibility = 'visible';
             } else {
                 titleChildren.style.visibility = 'hidden';
-            }
+            } 
         }
+        if (headerExists == false) {
+                UI.addNewHeader(currentPage);
+            }
+    }
+
+    // add new header 
+    static addNewHeader(currentPage) {
+        console.log(UI.nodeRef.titleHeaders)
+        const div = document.createElement('div');
+        div.setAttribute('class', `title ${currentPage}`);
+        div.textContent = `${currentPage}`;
+        UI.nodeRef.titleHeaders.appendChild(div);
     }
 
     // the today method will render todos according to 
@@ -246,7 +192,6 @@ export default class UI {
     // thisWeek(event) {
     // }
 
-
     static updateState(currentPage) {
         for (const eachState in UI.pageState) {
             if (eachState == currentPage) {
@@ -277,19 +222,92 @@ export default class UI {
         UI.renderProjectBox(projectName);           
     }
 
+    // render todos of current project
+    static renderProjectTodos(thisPage) {
+
+        UI.removeContentChildren();
+
+        let currentPage = '';
+
+        if (Object.prototype.toString.call(thisPage) == '[object String]') {
+            currentPage = thisPage;
+        } else {
+            // thisPage.stopPropagation();
+            currentPage = thisPage.target.id;
+        }
+
+        let thisPageState = UI.pageState[currentPage];
+        if (thisPageState == undefined) {
+            thisPageState = false;
+            currentPage = 'inbox';
+        }
+
+        if (thisPageState == false) {
+
+            // this could be a function: remove selected
+            for (const eachChild of UI.nodeRef.theSideBar.children) {
+                if (eachChild.classList.contains('selected')) {
+                    eachChild.classList.toggle('selected');
+                }
+
+                if (eachChild.id == currentPage) {
+                    eachChild.classList.toggle('selected');
+                }
+            }
+
+            // update the state of the current page
+            UI.updateState(currentPage);
+
+            // // call show project header function
+            UI.showHeader(currentPage);            
+
+        }
+
+        const thisTodos = UI.prototype.getProjectTodosUI(currentPage);
+
+        if (thisTodos.length !== 0) {
+            thisTodos.forEach(eachTodo => {
+
+                const newTaskContainer = document.createElement('div');
+                newTaskContainer.classList.add('new-todo-container')
+                newTaskContainer.addEventListener('blur', UI.addOrCall, true);
+            
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.id = eachTodo.id;
+                label.appendChild(input);
+                
+                const editableTaskSpan = document.createElement('span');
+                editableTaskSpan.contentEditable = "true";
+                editableTaskSpan.classList.add('editable-span');
+                editableTaskSpan.textContent = eachTodo.title;
+                newTaskContainer.appendChild(label);
+                newTaskContainer.appendChild(editableTaskSpan);
+                UI.nodeRef.content.insertAdjacentElement('afterbegin', newTaskContainer);
+            });
+        }
+
+        // render the new task button
+        if (UI.nodeRef.content.children.namedItem('new-todo-btn-container') == null) {
+            UI.newToDoBtn();
+        }
+    }
+
     // render projects when reloading page
     static renderProjectsOnReload() {
 
         const thisProjects = UI.prototype.getNotDefaultProjectsUI();
-        console.log(thisProjects);
+        // console.log(thisProjects);
         thisProjects.forEach(eachProject => {
             UI.renderProjectBox(eachProject.project_name);   
         })
     }
 
+    // remove projects from sidebar
     static removeProjectfromSideBar(project) {
         for (const eachChild of UI.nodeRef.theSideBar.children) {
-            if (eachChild.id == project) {
+            if (eachChild.id.includes(project)) {
                 eachChild.remove();
             }
         }
@@ -300,18 +318,15 @@ export default class UI {
         console.log(UI.pageState);
     }
 
-
+    // show project box on sidebar
     static renderProjectBox(project) {
         const ProjectContainer = document.createElement('div');
-        ProjectContainer.addEventListener('click', (e) => {
-            // UI.renderProjectTodos()
-            console.log(e.currentTarget.id)
-            console.log(UI.pageState);
-        });
+        ProjectContainer.addEventListener('click', UI.renderProjectTodos);
         ProjectContainer.setAttribute('id', `${project}`);
         ProjectContainer.setAttribute('class', 'project-container');
         
         const icon = document.createElement('img');
+        icon.setAttribute('class', 'icon-list');
         icon.setAttribute('src', listicon);
 
         const removeProjectContainer = document.createElement('div');
@@ -325,11 +340,13 @@ export default class UI {
             UI.removeProjectfromSideBar(e.target.id);
             // remove project from state
             UI.removeProjectState(project);
+            // UI.renderProjectTodos('inbox');
         });
         removeProjectContainer.appendChild(removeProject);
 
         const textContainer = document.createElement('div');
         textContainer.setAttribute('class', 'text-container')
+        textContainer.setAttribute('id', `${project}`);
         const projectNameText = document.createElement('span');
         projectNameText.textContent = project;
         textContainer.appendChild(projectNameText);
@@ -365,7 +382,7 @@ export default class UI {
         } 
     }
 
-
+    //
     static addInputProjectName() {
         const inputProjectContainer = document.createElement('div');
         inputProjectContainer.setAttribute('class', 'input-container');
@@ -386,10 +403,12 @@ export default class UI {
         projectInput.focus();
     }
 
+    // 
     static newProjects() {
         // remove new project div
         UI.removeNewProjectDiv();
         // add input for project name
         UI.addInputProjectName();
     }
+    
 }
