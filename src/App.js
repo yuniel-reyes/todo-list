@@ -44,6 +44,8 @@ export default class App {
             },
 
             removeProjectUI: _Storage.removeProject,
+
+            updateContentUI: _Storage.updateToDoContent,
         }
 
 

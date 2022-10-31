@@ -73,7 +73,6 @@ export default class _Storage {
 
         const allProjects = _Storage.getAllProjects();
         let thisTodos = [];
-        // console.log(allProjects)
 
         allProjects.forEach(eachArray => {
                 if (project_name == "inbox" && (eachArray.project_name !== "today" && 
@@ -88,7 +87,6 @@ export default class _Storage {
                 }
         })
         
-        console.log(thisTodos);
         return thisTodos;
 
     }
@@ -100,6 +98,24 @@ export default class _Storage {
 
         const ProjectIndex = allProjects.findIndex(element => element.project_name == project_name);
         allProjects.splice(ProjectIndex, 1);
+
+        localStorage.setItem("allProjects", JSON.stringify(allProjects));
+    }
+
+    // update content of todo
+    static updateToDoContent(id, content, project) {
+        const allProjects = _Storage.getAllProjects();
+        // console.log(allProjects)
+
+        allProjects.forEach(element => {
+            if (element.project_name == project) {
+                element.project_todos.forEach(todo => {
+                    if (todo.id == Number(id)) {
+                        todo.title = content;
+                    }
+                });
+            }
+        });
 
         localStorage.setItem("allProjects", JSON.stringify(allProjects));
     }

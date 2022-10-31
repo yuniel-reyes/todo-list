@@ -21,13 +21,14 @@ export default class UI {
     };
 
     constructor({createTaskUI, getProjectTodosUI, createNewProjectUI, 
-        getNotDefaultProjectsUI, removeProjectUI}) {
+        getNotDefaultProjectsUI, removeProjectUI, updateContentUI}) {
         
         UI.prototype.createTaskUI = createTaskUI;
         UI.prototype.getProjectTodosUI = getProjectTodosUI;
         UI.prototype.createNewProjectUI = createNewProjectUI;
         UI.prototype.getNotDefaultProjectsUI = getNotDefaultProjectsUI;
         UI.prototype.removeProjectUI = removeProjectUI;
+        UI.prototype.updateContentUI = updateContentUI;
 
         this.listeners = (() => { // UI.inbox
             UI.nodeRef.theInboxTab.addEventListener('click', UI.renderProjectTodos); 
@@ -92,22 +93,24 @@ export default class UI {
         } else {
             if (e.currentTarget.firstChild.firstChild.id == "X") {
                 const todoId = UI.prototype.createTaskUI(e.target.textContent, UI.getCurrentPage());
-                UI.updateId(todoId);
+                UI.updateTodoData(todoId, UI.getCurrentPage());
                 UI.checkForNewTaskBtn();
             } else { 
-                UI.prototype.updateContentUI(e.currentTarget.firstChild.firstChild.id, e.currentTarget.lastChild.textContent);
+                // console.log(e.currentTarget.firstChild.firstChild.dataset['project']);
+                UI.prototype.updateContentUI(e.currentTarget.firstChild.firstChild.id, e.currentTarget.lastChild.textContent, e.currentTarget.firstChild.firstChild.dataset['project']);
                 UI.checkForNewTaskBtn();    
             }
         }
         return
     }
 
-    static updateId(todoId) {
+    static updateTodoData(todoId, projectName) {
         const updadeThisId = document.querySelectorAll('.new-todo-container');
-        updadeThisId[updadeThisId.length - 1].firstChild.firstChild.id = todoId
+        updadeThisId[updadeThisId.length - 1].firstChild.firstChild.id = todoId;
+        updadeThisId[updadeThisId.length - 1].firstChild.firstChild.setAttribute('data-project', projectName);
         return;
     }
-            
+
     // if editing a task, a button for a new on
     //  will be there. So always check if a button
     // for new task is there. If it isn't, add it
@@ -147,7 +150,7 @@ export default class UI {
 
     // add new header 
     static addNewHeader(currentPage) {
-        console.log(UI.nodeRef.titleHeaders)
+        // console.log(UI.nodeRef.titleHeaders)
         const div = document.createElement('div');
         div.setAttribute('class', `title ${currentPage}`);
         div.textContent = `${currentPage}`;
@@ -270,12 +273,13 @@ export default class UI {
 
                 const newTaskContainer = document.createElement('div');
                 newTaskContainer.classList.add('new-todo-container')
-                newTaskContainer.addEventListener('blur', UI.addOrCall, true);
+                newTaskContainer.addEventListener('blur', UI.setToDo, true);
             
                 const label = document.createElement('label');
                 const input = document.createElement('input');
                 input.type = 'checkbox';
                 input.id = eachTodo.id;
+                input.setAttribute('data-project', eachTodo.project_name);
                 label.appendChild(input);
                 
                 const editableTaskSpan = document.createElement('span');
