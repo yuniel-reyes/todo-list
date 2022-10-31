@@ -22,7 +22,7 @@ export default class UI {
     };
 
     constructor({createTaskUI, getProjectTodosUI, createNewProjectUI, 
-        getNotDefaultProjectsUI, removeProjectUI, updateContentUI}) {
+        getNotDefaultProjectsUI, removeProjectUI, updateContentUI, deleteTodoUI}) {
         
         UI.prototype.createTaskUI = createTaskUI;
         UI.prototype.getProjectTodosUI = getProjectTodosUI;
@@ -30,6 +30,7 @@ export default class UI {
         UI.prototype.getNotDefaultProjectsUI = getNotDefaultProjectsUI;
         UI.prototype.removeProjectUI = removeProjectUI;
         UI.prototype.updateContentUI = updateContentUI;
+        UI.prototype.deleteTodoUI = deleteTodoUI;
 
         this.listeners = (() => { // UI.inbox
             UI.nodeRef.theInboxTab.addEventListener('click', UI.renderProjectTodos); 
@@ -68,7 +69,10 @@ export default class UI {
     
         const label = document.createElement('label');
         const input = document.createElement('input');
-        input.addEventListener('change', UI.removeTodo);
+        input.addEventListener('change', (e) => {
+            UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project']);
+            UI.removeTodoFromPage(e.target.id);
+        });
         input.type = 'checkbox';
         input.id = "X";
         label.appendChild(input);
@@ -90,6 +94,10 @@ export default class UI {
         const removeDiv = document.createElement('div');
         removeDiv.setAttribute('class', 'remove-icon-container');
         const removeIcon = document.createElement('img');
+        removeIcon.addEventListener('click', (e) => {
+            UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project'])
+            UI.removeTodoFromPage(e.target.id);
+        });
         removeIcon.setAttribute('src', deleteIcon);
         removeIcon.setAttribute('id', 'X');
         removeIcon.setAttribute('data-project', 'X');
@@ -110,7 +118,7 @@ export default class UI {
     // save todo to the storage
     static setToDo(e) {
 
-        console.log(e.currentTarget.parentElement.lastChild.firstChild);
+        // console.log(e.currentTarget.parentElement.lastChild.firstChild);
         // console.log(e.target.parentElement);
         // console.log(e.currentTarget.previousSibling.firstChild);
         if (e.target.textContent == "") {
@@ -124,8 +132,11 @@ export default class UI {
                 UI.updateTodoData(newTask.id, UI.getCurrentPage());
                 UI.checkForNewTaskBtn();
             } else { 
-                // console.log(e.currentTarget.firstChild.firstChild.dataset['project']);
-                UI.prototype.updateContentUI(e.currentTarget.firstChild.firstChild.id, e.currentTarget.lastChild.textContent, e.currentTarget.firstChild.firstChild.dataset['project']);
+                // id, content, project
+                const id = e.currentTarget.parentElement.firstChild.firstChild.id;
+                const project = e.currentTarget.parentElement.firstChild.firstChild.dataset['project'];
+                const newContent = e.currentTarget.parentElement.firstChild.nextSibling.firstChild.textContent;
+                UI.prototype.updateContentUI(id, newContent, project);
                 UI.checkForNewTaskBtn();    
             }
         }
@@ -142,9 +153,17 @@ export default class UI {
         return;
     }
 
-    // static editInfoBox() {
-    //     console.log('Works')
-    // }
+    static removeTodoFromPage(id) {
+        console.log(id)
+        console.log(UI.nodeRef.content);
+        for (const eachChild of Array.from(UI.nodeRef.content.children)){
+            if (eachChild.className == 'new-todo-container'){
+                if (eachChild.firstChild.firstChild.id == Number(id)) {
+                    eachChild.remove();
+                }
+            }
+        } 
+    }
 
     // if editing a task, a button for a new on
     //  will be there. So always check if a button
@@ -311,6 +330,10 @@ export default class UI {
             
                 const label = document.createElement('label');
                 const input = document.createElement('input');
+                input.addEventListener('change', (e) => {
+                    UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project']);
+                    UI.removeTodoFromPage(e.target.id);
+                });
                 input.type = 'checkbox';
                 input.id = eachTodo.id;
                 input.setAttribute('data-project', eachTodo.project_name);
@@ -336,6 +359,9 @@ export default class UI {
                 const removeDiv = document.createElement('div');
                 removeDiv.setAttribute('class', 'remove-icon-container');
                 const removeIcon = document.createElement('img');
+                removeIcon.addEventListener('click', (e) => {
+                    UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project'])
+                })
                 removeIcon.setAttribute('src', deleteIcon);
                 removeIcon.setAttribute('id', 'X');
                 removeIcon.setAttribute('data-project', 'X');

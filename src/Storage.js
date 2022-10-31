@@ -120,4 +120,20 @@ export default class _Storage {
         localStorage.setItem("allProjects", JSON.stringify(allProjects));
     }
 
+    static deleteTodo(id, project_name) {
+        const allProjects = _Storage.getAllProjects();
+
+        // find project
+        allProjects.forEach(eachProject => {
+            if (eachProject.project_name == project_name) {
+                const thisIndex = eachProject.project_todos.findIndex(eachTodo => eachTodo.id == Number(id));
+                eachProject.project_todos.splice(thisIndex, 1);
+            }
+        })
+
+        localStorage.setItem("allProjects", JSON.stringify(allProjects));
+    }
+
+
+
 }
