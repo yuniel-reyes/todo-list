@@ -5,9 +5,9 @@ import deleteIcon from './img/delete.png';
 export default class UI {
     
     static pageState = {
-        inbox: false,
-        today: false,
-        thisWeek: false,
+        'inbox': false,
+        'today': false,
+        'this-week': false,
     };
 
     static nodeRef = {
@@ -23,7 +23,7 @@ export default class UI {
 
     constructor({createTaskUI, getProjectTodosUI, createNewProjectUI, 
         getNotDefaultProjectsUI, removeProjectUI, updateContentUI, deleteTodoUI,
-        updateTodoDateUI}) {
+        updateTodoDateUI, todaysTodosUI}) {
         
         UI.prototype.createTaskUI = createTaskUI;
         UI.prototype.getProjectTodosUI = getProjectTodosUI;
@@ -33,16 +33,17 @@ export default class UI {
         UI.prototype.updateContentUI = updateContentUI;
         UI.prototype.deleteTodoUI = deleteTodoUI;
         UI.prototype.updateTodoDateUI = updateTodoDateUI;
+        UI.prototype.todaysTodosUI = todaysTodosUI;
 
         this.listeners = (() => { // UI.inbox
-            UI.nodeRef.theInboxTab.addEventListener('click', UI.renderProjectTodos); 
-            UI.nodeRef.theTodayTab.addEventListener('click', UI.today);
-            UI.nodeRef.theWeekTab.addEventListener('click', UI.thisWeek);
+            UI.nodeRef.theInboxTab.addEventListener('click', UI.prepareTodosRendering); 
+            UI.nodeRef.theTodayTab.addEventListener('click', UI.prepareTodosRendering);
+            UI.nodeRef.theWeekTab.addEventListener('click', UI.prepareTodosRendering);
             UI.nodeRef.newProjects.addEventListener('click', UI.newProjects);
         })();
 
         // UI.inbox();
-        UI.renderProjectTodos('inbox');
+        UI.prepareTodosRendering('inbox');
         UI.renderProjectsOnReload();
     }
     
@@ -141,7 +142,7 @@ export default class UI {
                 const project = e.currentTarget.parentElement.firstChild.firstChild.dataset['project'];
                 const newContent = e.currentTarget.parentElement.firstChild.nextSibling.firstChild.textContent;
                 UI.prototype.updateContentUI(id, newContent, project);
-                UI.checkForNewTaskBtn();    
+                UI.checkForNewTaskBtn(UI.getCurrentPage());    
             }
         }
         return
@@ -174,9 +175,9 @@ export default class UI {
     // if editing a task, a button for a new on
     //  will be there. So always check if a button
     // for new task is there. If it isn't, add it
-    static checkForNewTaskBtn() {
+    static checkForNewTaskBtn(currentPage) {
         const checkForBtn = document.getElementById('new-todo-btn-container');
-        if (checkForBtn == null) {
+        if (checkForBtn == null && (currentPage != 'today') && (currentPage != 'this-week')) {
             UI.newToDoBtn();
             return;
         }
@@ -185,9 +186,7 @@ export default class UI {
     // remove content when loading projects
     static removeContentChildren() {
         for (const eachChildren of Array.from(UI.nodeRef.content.children)) {
-            if (eachChildren.className == 'new-todo-container') {
-                eachChildren.remove();
-            }
+            eachChildren.remove();
         }
     }
 
@@ -216,44 +215,6 @@ export default class UI {
         div.textContent = `${currentPage}`;
         UI.nodeRef.titleHeaders.appendChild(div);
     }
-
-    // the today method will render todos according to 
-    // its due date
-    static today() {
-
-        // this will get me the current state of the
-        // today tab / page. It will be false at first
-        const todayState = UI.pageState.today;
-        const currentPage = 'today';
-    
-        if (todayState == false) {
-    
-            // this could be a function: remove selected
-            for (const eachChild of UI.nodeRef.theSideBar.children) {
-                if (eachChild.classList.contains('selected')) {
-                    eachChild.classList.toggle('selected');
-                }
-            }
-        }
-
-        // // show inbox tab as selected 
-        UI.nodeRef.theTodayTab.classList.toggle('selected');
-
-        // call show project header function
-        UI.showHeader(currentPage);
-
-        // remove all content node children
-        Array.from(UI.nodeRef.content.children).forEach(eachContentChild => {
-            eachContentChild.remove();
-        });
-
-        // // update the state of the current page
-        UI.updateState(currentPage);
-        return UI.nodeRef.theSideBar;
-    }
-
-    // thisWeek(event) {
-    // }
 
     static updateState(currentPage) {
         for (const eachState in UI.pageState) {
@@ -286,7 +247,39 @@ export default class UI {
     }
 
     // render todos of current project
-    static renderProjectTodos(thisPage) {
+    static prepareTodosRendering(thisPage) {
+
+        const currentPage = UI.cleanPageToJump(thisPage);
+
+        let thisTodos = [];
+
+        if (currentPage == 'today') {
+            
+            thisTodos = UI.prototype.todaysTodosUI();
+
+        } else if (currentPage == 'this-week') {
+
+            console.log('this_week');
+
+        } else {
+
+            thisTodos = UI.prototype.getProjectTodosUI(currentPage);
+        }
+
+        UI.renderThisTodos(thisTodos);
+
+        // render the new task button
+        if ((currentPage !== 'today') && (currentPage !== 'this-week')) {
+            
+            if (UI.nodeRef.content.children.namedItem('new-todo-btn-container') == null) {
+                UI.newToDoBtn();
+            }
+        }
+
+    }
+
+    // clean page
+    static cleanPageToJump(thisPage) {
 
         UI.removeContentChildren();
 
@@ -326,10 +319,15 @@ export default class UI {
 
         }
 
-        const thisTodos = UI.prototype.getProjectTodosUI(currentPage);
+        return currentPage;
 
-        if (thisTodos.length !== 0) {
-            thisTodos.forEach(eachTodo => {
+    }
+
+    // render the returned todos on the page
+    static renderThisTodos(todos) {
+
+        if (todos.length !== 0) {
+            todos.forEach(eachTodo => {
 
                 const newTaskContainer = document.createElement('div');
                 newTaskContainer.classList.add('new-todo-container')
@@ -365,6 +363,8 @@ export default class UI {
                     // console.log('Works')
                 });
                 dateInput.id = eachTodo.id;
+                dateInput.setAttribute('data-project', eachTodo.project_name);
+                console.log(eachTodo.dueDate);
                 dateInput.value = eachTodo.dueDate;
                 dateDiv.appendChild(dateInput);
 
@@ -388,11 +388,6 @@ export default class UI {
                 UI.nodeRef.content.insertAdjacentElement('afterbegin', newTaskContainer);
             });
         }
-
-        // render the new task button
-        if (UI.nodeRef.content.children.namedItem('new-todo-btn-container') == null) {
-            UI.newToDoBtn();
-        }
     }
 
     // render projects when reloading page
@@ -406,7 +401,7 @@ export default class UI {
     }
 
     // remove projects from sidebar
-    static removeProjectfromSideBar(project) {
+    static removeProjectFromSideBar(project) {
         for (const eachChild of UI.nodeRef.theSideBar.children) {
             if (eachChild.id.includes(project)) {
                 eachChild.remove();
@@ -422,7 +417,7 @@ export default class UI {
     // show project box on sidebar
     static renderProjectBox(project) {
         const ProjectContainer = document.createElement('div');
-        ProjectContainer.addEventListener('click', UI.renderProjectTodos);
+        ProjectContainer.addEventListener('click', UI.prepareTodosRendering);
         ProjectContainer.setAttribute('id', `${project}`);
         ProjectContainer.setAttribute('class', 'project-container');
         
@@ -438,10 +433,9 @@ export default class UI {
         removeProject.setAttribute('src', removeIcon);
         removeProject.addEventListener('click', (e) => {
             UI.prototype.removeProjectUI(e.target.id);
-            UI.removeProjectfromSideBar(e.target.id);
+            UI.removeProjectFromSideBar(e.target.id);
             // remove project from state
             UI.removeProjectState(project);
-            // UI.renderProjectTodos('inbox');
         });
         removeProjectContainer.appendChild(removeProject);
 

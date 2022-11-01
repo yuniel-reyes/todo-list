@@ -1,4 +1,4 @@
-todo-list: Todo list app created with HTML, CSS and JS
+todo-list: Todo list app created with HTML, CSS and JS (webpack, date-fns)
 =========
 
 # Design
@@ -86,73 +86,91 @@ todo-list: Todo list app created with HTML, CSS and JS
 
 **UX-UI (DOM)**
 **UI.js** 
-  - The `UI.js` file will be the view. All
-  buttons and event listeners will be added
-  hier.
-  - When the `UI` is instantiated in the `App` 
-  class, some compenents are immediately
-  rendered on the page. However, other components
-  are added using the template file of the html-webpack-pugin.   
-  This means that the app will have a static/fixed UI:
- - A `sidebar` to the left with:  
-    a. *inbox*
-    b. *today*
-    c. *thisweek*
-    d. *projects* - add projects button
- - And a footer
- - The three first options in the sidebar are
-  projects. A project is a list of todos  (see **Project**)
- - Inside the `UI` class:
-  *pageState*: 
-   *nodeRef*:
-   *class constructor*:
-   *newToDoBtn: button component*: 
-   *addNewTask*:
-   *checkForNewTaskBtn*
-   *renderProjectTodos*
-      + `renderProjectTodos()` is the name of the static method
-      that gets called when the only `UI` object its
-      instantiated. 
-      + Its used too as a callback function for the 
-      tab inbox --if inbox tab is clicked, the inbox method gets called.
-      + Inside `renderProjectTodos()`, the first thing is removing all
-      content of the previous view. 
-      Then, I create a to hold the current page, meaning which button
-      the user has clicked. 
-      + As the method handles event objects and strings, I test for that.
-      When deleting any project, the app will back off to the inbox
-      default project. In that case, the `thisPageState` will be undefine.
-      I handle that by testing for it. 
-      + Using that variable, the method show corresponding tab as selected
-      + Then, the status of the current page is updated --`updateStatus()`.
-      + Call `showHeader()` and show tab header according to current tab.
-      + This is where the method connnects witht the _Storage class through 
-      the controller (App). See **Project**
-      *today*:
-      *updateStatus*:
-      *getCurrentPage*: 
-      *removeNewProjectDiv*: 
-       + It hides the button New Projects,
-      *renderNewProject*: 
-       + It adds the new project on the page
-       + Event handler need to be added: 
-         - remove project
-         - render todo projects 
-      *checkIfProject*: 
-       + It checks if the user has entered a name for a
-       project. If true, the callback function call
-       `createNewProjectUI()`, a function that comes
-       from the App class (see it there).
-       + Then it call `renderNewProject()`.
-       + It remove the input and make the button 
-       for new projects visible 
-      *addInputProjectName*:
-       + It creates and add the input to enter the project name
-       + It add the event handler `checkIfProject()`.  
-      *newProjects*:
-        + Project are added when the newProjects button is clicked. 
-    The `newProjects()` callback function call two functions:
-    `removeNewProjectDiv()` and `addInputProjectName()`.
+- The `UI.js` file will be the view. All  buttons and event 
+listeners will be added hier.
+- When the `UI` is instantiated in the `App` 
+class, some components are immediately
+rendered on the page. However, other components
+are added using the template file of the html-webpack-pugin.   
+This means that the app will have a static/fixed UI:
+- A `sidebar` to the left with:  
+      a. *inbox*
+      b. *today*
+      c. *thisweek*
+      d. *projects* - add projects button
+- And a footer
+- The three first options in the sidebar are
+projects. A project is a list of todos  (see **Project**)
+- Inside the `UI` class:
+*pageState*: 
+*nodeRef*:
+*class constructor*:
+*newToDoBtn*: 
+*addNewTask*:
+*setToDo*:
+*updateTodoData*:
+*removeTodoFromPage*:
+*checkForNewTaskBtn*
+*removeContentChildren*
+*showHeader*
+*addNewHeader*
+*updateState*
+*getCurrentState*
+*removeNewProjectDiv*
+*renderNewProject*
+*prepateTodosRendering*
+*cleanPageToJump*
+*renderThisTodos*
+*removeProjectFromSideBar*
+*removeProjectState*
+*renderProjectBox*
+*checkProjectBox*
+*checkIfProject*
+*addInputProjectName*
+*newProjects*
++ `renderProjectTodos()` is the name of the static method
+that gets called when the only `UI` object its
+instantiated. 
++ Its used too as a callback function for the 
+tab inbox --if inbox tab is clicked, the inbox method gets called.
++ Inside `renderProjectTodos()`, the first thing is removing all
+content of the previous view. 
+Then, I create a to hold the current page, meaning which button
+the user has clicked. 
++ As the method handles event objects and strings, I test for that.
+When deleting any project, the app will back off to the inbox
+default project. In that case, the `thisPageState` will be undefine.
+I handle that by testing for it. 
++ Using that variable, the method show corresponding tab as selected
++ Then, the status of the current page is updated --`updateStatus()`.
++ Call `showHeader()` and show tab header according to current tab.
++ This is where the method connnects witht the _Storage class through 
+the controller (App). See **Project**
+*today*:
+*updateStatus*:
+*getCurrentPage*: 
+*removeNewProjectDiv*: 
++ It hides the button New Projects,
+*renderNewProject*: 
++ It adds the new project on the page
++ Event handler need to be added: 
+  - remove project
+  - render todo projects 
+*checkIfProject*: 
++ It checks if the user has entered a name for a
+project. If true, the callback function call
+`createNewProjectUI()`, a function that comes
+from the App class (see it there).
++ Then it call `renderNewProject()`.
++ It remove the input and make the button 
+for new projects visible 
+*addInputProjectName*:
++ It creates and add the input to enter the project name
++ It add the event handler `checkIfProject()`.  
+*newProjects*:
++ Project are added when the newProjects button is clicked. 
+The `newProjects()` callback function call two functions:
+`removeNewProjectDiv()` and `addInputProjectName()`.
  
 
 

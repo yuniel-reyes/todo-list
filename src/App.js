@@ -14,7 +14,7 @@ export default class App {
         this.view = new UI(this.handlers()); // Project.projects
 
         // initialize the storage and pass default projects
-        localStorage.clear()
+        // localStorage.clear()
         _Storage.initStorage(this.inbox_project, this.today_project, this.week_project);
 
     }
@@ -50,6 +50,8 @@ export default class App {
             deleteTodoUI: _Storage.deleteTodo,
 
             updateTodoDateUI: _Storage.updateTodoDate,
+
+            todaysTodosUI: _Storage.todaysTodos,
         }
 
 

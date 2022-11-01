@@ -1,3 +1,5 @@
+import {format, compareAsc} from 'date-fns'
+
 export default class _Storage {
 
     static getAllProjects() {
@@ -136,8 +138,8 @@ export default class _Storage {
 
     static updateTodoDate(id, date, project) {
         const allProjects = _Storage.getAllProjects();
-        // console.log(allProjects)
-
+        // date = format(new Date(date), 'MM/dd/yyyy');
+ 
         allProjects.forEach(element => {
             if (element.project_name == project) {
                 element.project_todos.forEach(todo => {
@@ -149,8 +151,23 @@ export default class _Storage {
         });
 
         localStorage.setItem("allProjects", JSON.stringify(allProjects));
+    }
 
+    static todaysTodos(){
 
+        const allProjects = _Storage.getAllProjects();
+        let thisTodos = [];
+
+        const today = format(new Date(), 'yyyy-MM-dd');
+        allProjects.forEach(eachProject => {
+            eachProject.project_todos.forEach(eachTodo => {
+                if (eachTodo.dueDate == today) {
+                    thisTodos.push(eachTodo);
+                }
+            });
+        });
+
+        return thisTodos;
     }
 
 
