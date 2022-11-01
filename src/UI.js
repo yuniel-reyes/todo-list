@@ -22,7 +22,8 @@ export default class UI {
     };
 
     constructor({createTaskUI, getProjectTodosUI, createNewProjectUI, 
-        getNotDefaultProjectsUI, removeProjectUI, updateContentUI, deleteTodoUI}) {
+        getNotDefaultProjectsUI, removeProjectUI, updateContentUI, deleteTodoUI,
+        updateTodoDateUI}) {
         
         UI.prototype.createTaskUI = createTaskUI;
         UI.prototype.getProjectTodosUI = getProjectTodosUI;
@@ -31,6 +32,7 @@ export default class UI {
         UI.prototype.removeProjectUI = removeProjectUI;
         UI.prototype.updateContentUI = updateContentUI;
         UI.prototype.deleteTodoUI = deleteTodoUI;
+        UI.prototype.updateTodoDateUI = updateTodoDateUI;
 
         this.listeners = (() => { // UI.inbox
             UI.nodeRef.theInboxTab.addEventListener('click', UI.renderProjectTodos); 
@@ -89,13 +91,17 @@ export default class UI {
         dateDiv.setAttribute('class', 'date-container');
         const dateInput = document.createElement('input')
         dateInput.setAttribute('type', 'date');
+        dateInput.addEventListener('change', (e) => {
+            UI.prototype.updateTodoDateUI(e.target.id, e.target.value, e.target.dataset['project']);
+        });
         dateInput.id = "X";
+        dateInput.setAttribute('data-project', 'X');
 
         const removeDiv = document.createElement('div');
         removeDiv.setAttribute('class', 'remove-icon-container');
         const removeIcon = document.createElement('img');
         removeIcon.addEventListener('click', (e) => {
-            UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project'])
+            UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project']);
             UI.removeTodoFromPage(e.target.id);
         });
         removeIcon.setAttribute('src', deleteIcon);
@@ -127,8 +133,6 @@ export default class UI {
         } else {
             if (e.currentTarget.previousSibling.firstChild.id == "X") {
                 const newTask = UI.prototype.createTaskUI(e.target.textContent, UI.getCurrentPage());
-                // console.log(newTask)
-                // UI.editInfoBox();
                 UI.updateTodoData(newTask.id, UI.getCurrentPage());
                 UI.checkForNewTaskBtn();
             } else { 
@@ -149,7 +153,9 @@ export default class UI {
         updadeThisId[updadeThisId.length - 1].firstChild.firstChild.setAttribute('data-project', projectName);
         updadeThisId[updadeThisId.length - 1].lastChild.firstChild.id = todoId;
         updadeThisId[updadeThisId.length - 1].lastChild.firstChild.setAttribute('data-project', projectName);
-
+        // update date data
+        updadeThisId[updadeThisId.length - 1].lastChild.previousSibling.firstChild.id = todoId;
+        updadeThisId[updadeThisId.length - 1].lastChild.previousSibling.firstChild.setAttribute('data-project', projectName);
         return;
     }
 
@@ -331,6 +337,7 @@ export default class UI {
                 const label = document.createElement('label');
                 const input = document.createElement('input');
                 input.addEventListener('change', (e) => {
+                    // console.log(e);
                     UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project']);
                     UI.removeTodoFromPage(e.target.id);
                 });
@@ -353,18 +360,25 @@ export default class UI {
                 dateDiv.setAttribute('class', 'date-container');
                 const dateInput = document.createElement('input');
                 dateInput.setAttribute('type', 'date');
-                dateInput.id = "X";
+                dateInput.addEventListener('input', (e) => {
+                    UI.prototype.updateTodoDateUI(e.target.id, e.target.value, e.target.dataset['project']);
+                    // console.log('Works')
+                });
+                dateInput.id = eachTodo.id;
+                dateInput.value = eachTodo.dueDate;
                 dateDiv.appendChild(dateInput);
 
                 const removeDiv = document.createElement('div');
                 removeDiv.setAttribute('class', 'remove-icon-container');
                 const removeIcon = document.createElement('img');
                 removeIcon.addEventListener('click', (e) => {
+                    // console.log(e);
                     UI.prototype.deleteTodoUI(e.target.id, e.target.dataset['project'])
-                })
+                    UI.removeTodoFromPage(e.target.id);
+                });
                 removeIcon.setAttribute('src', deleteIcon);
-                removeIcon.setAttribute('id', 'X');
-                removeIcon.setAttribute('data-project', 'X');
+                removeIcon.setAttribute('id', eachTodo.id);
+                removeIcon.setAttribute('data-project', eachTodo.project_name);
                 removeDiv.appendChild(removeIcon);
         
                 newTaskContainer.appendChild(label);

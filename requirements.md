@@ -194,6 +194,7 @@ available height in the page
   - How do I create variable names dynamically?
   - Can't event object properties being copied? 
   - Can list comprehensions be done in JS?  
+  - Does a function /method /static method has to allways return a value?
 
 
 

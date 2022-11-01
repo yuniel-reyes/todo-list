@@ -134,6 +134,25 @@ export default class _Storage {
         localStorage.setItem("allProjects", JSON.stringify(allProjects));
     }
 
+    static updateTodoDate(id, date, project) {
+        const allProjects = _Storage.getAllProjects();
+        // console.log(allProjects)
+
+        allProjects.forEach(element => {
+            if (element.project_name == project) {
+                element.project_todos.forEach(todo => {
+                    if (todo.id == Number(id)) {
+                        todo.dueDate = date;
+                    }
+                });
+            }
+        });
+
+        localStorage.setItem("allProjects", JSON.stringify(allProjects));
+
+
+    }
+
 
 
 }

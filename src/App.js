@@ -48,6 +48,8 @@ export default class App {
             updateContentUI: _Storage.updateToDoContent,
 
             deleteTodoUI: _Storage.deleteTodo,
+
+            updateTodoDateUI: _Storage.updateTodoDate,
         }
 
 
