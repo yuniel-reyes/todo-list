@@ -101,6 +101,11 @@ input[type='button'] {
     gap: 6px;
 }
 
+.todo-header {
+    margin-left: 30px;
+    font-size: 30px;
+}
+
 .icon-container:hover {
     color: rgb(58, 121, 240);
     border-radius: 4px;
