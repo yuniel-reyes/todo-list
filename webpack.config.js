@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: {
         bundle: path.resolve(__dirname, 'src/index.js') // as an object for multiple entry points
     },
@@ -11,7 +11,7 @@ module.exports = {
         filename: '[name].[contenthash].js',
         clean: true // remove old bundles when running build
     },
-    devtool: 'inline-source-map', // keep track from where the source code is comming: debugging 
+    // devtool: 'inline-source-map', // keep track from where the source code is comming: debugging 
     // npm install -D webpack-dev-server
     devServer: {
         static: {directory: path.resolve(__dirname, 'dist')}, //what to serve

@@ -113,7 +113,10 @@ Solution: make the object a static property
 - Calling a constructor method/function from inside a static method
 - Object destructuring | Destructuring assignment:
   Take the return object from the handlers method and desctructure it
-- The content value of the display CSS property  
+- The content value of the display CSS property
+- What happends if I change the mode to production in config file?
+  First, it appear a error saying 'X assets exceed the recommended
+  size limit. This happens because of the the devtool inline-source map   
 
 *Questions* :
 - Can a module function (module pattern)
