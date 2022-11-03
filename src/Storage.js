@@ -145,6 +145,7 @@ export default class _Storage {
                 element.project_todos.forEach(todo => {
                     if (todo.id == Number(id)) {
                         todo.dueDate = date;
+                        todo.week = format(new Date(date), 'w');
                     }
                 });
             }
@@ -171,5 +172,21 @@ export default class _Storage {
     }
 
 
+    static thisWeeksTodos() {
+
+        const allProjects = _Storage.getAllProjects();
+        let thisTodos = [];
+        const thisWeek = format(new Date(), 'w');
+
+        allProjects.forEach(eachProject => {
+            eachProject.project_todos.forEach(eachTodo => {
+                if (eachTodo.week == thisWeek) {
+                    thisTodos.push(eachTodo);
+                }
+            });
+        });
+
+        return thisTodos;
+    }
 
 }

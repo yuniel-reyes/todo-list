@@ -23,7 +23,7 @@ export default class UI {
 
     constructor({createTaskUI, getProjectTodosUI, createNewProjectUI, 
         getNotDefaultProjectsUI, removeProjectUI, updateContentUI, deleteTodoUI,
-        updateTodoDateUI, todaysTodosUI}) {
+        updateTodoDateUI, todaysTodosUI, thisWeeksTodosUI}) {
         
         UI.prototype.createTaskUI = createTaskUI;
         UI.prototype.getProjectTodosUI = getProjectTodosUI;
@@ -34,6 +34,7 @@ export default class UI {
         UI.prototype.deleteTodoUI = deleteTodoUI;
         UI.prototype.updateTodoDateUI = updateTodoDateUI;
         UI.prototype.todaysTodosUI = todaysTodosUI;
+        UI.prototype.thisWeeksTodosUI = thisWeeksTodosUI;
 
         this.listeners = (() => { // UI.inbox
             UI.nodeRef.theInboxTab.addEventListener('click', UI.prepareTodosRendering); 
@@ -248,18 +249,17 @@ export default class UI {
 
     // render todos of current project
     static prepareTodosRendering(thisPage) {
-
+        
         const currentPage = UI.cleanPageToJump(thisPage);
 
         let thisTodos = [];
-
         if (currentPage == 'today') {
             
             thisTodos = UI.prototype.todaysTodosUI();
 
         } else if (currentPage == 'this-week') {
 
-            console.log('this_week');
+            thisTodos = UI.prototype.thisWeeksTodosUI();
 
         } else {
 
@@ -289,10 +289,12 @@ export default class UI {
             currentPage = thisPage;
         } else {
             // thisPage.stopPropagation();
-            currentPage = thisPage.target.id;
+            currentPage = thisPage.currentTarget.id;
         }
 
         let thisPageState = UI.pageState[currentPage];
+        UI.updateState(currentPage);
+        console.log(UI.pageState);
         if (thisPageState == undefined) {
             thisPageState = false;
             currentPage = 'inbox';
@@ -312,7 +314,6 @@ export default class UI {
             }
 
             // update the state of the current page
-            UI.updateState(currentPage);
 
             // // call show project header function
             UI.showHeader(currentPage);            
@@ -421,9 +422,11 @@ export default class UI {
         ProjectContainer.setAttribute('id', `${project}`);
         ProjectContainer.setAttribute('class', 'project-container');
         
+        const iconDiv = document.createElement('div');
         const icon = document.createElement('img');
         icon.setAttribute('class', 'icon-list');
         icon.setAttribute('src', listicon);
+        iconDiv.appendChild(icon);
 
         const removeProjectContainer = document.createElement('div');
         removeProjectContainer.setAttribute('class', 'remove-container');
@@ -440,6 +443,7 @@ export default class UI {
         removeProjectContainer.appendChild(removeProject);
 
         const textContainer = document.createElement('div');
+        // textContainer.addEventListener('click', UI.prepareTodosRendering);
         textContainer.setAttribute('class', 'text-container')
         textContainer.setAttribute('id', `${project}`);
         const projectNameText = document.createElement('span');

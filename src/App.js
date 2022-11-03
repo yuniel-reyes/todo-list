@@ -52,6 +52,8 @@ export default class App {
             updateTodoDateUI: _Storage.updateTodoDate,
 
             todaysTodosUI: _Storage.todaysTodos,
+
+            thisWeeksTodosUI: _Storage.thisWeeksTodos,
         }
 
 
