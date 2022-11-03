@@ -88,64 +88,6 @@ This means that the app will have a static/fixed UI:
 + And a footer
 + The three first options in the sidebar are
 projects. A project is a list of todos  (see **Project**)
-+ Inside the `UI` class:
-*pageState*: 
-*nodeRef*:
-*class constructor*:
-*newToDoBtn*: 
-*addNewTask*:
-*setToDo*:
-*updateTodoData*:
-*removeTodoFromPage*:
-*checkForNewTaskBtn*
-*removeContentChildren*
-*showHeader*
-*addNewHeader*
-*updateState*
-*getCurrentState*
-*removeNewProjectDiv*
-*renderNewProject*
-*prepateTodosRendering*
-*cleanPageToJump*
-*renderThisTodos*
-*removeProjectFromSideBar*
-*removeProjectState*
-*renderProjectBox*
-*checkProjectBox*
-*checkIfProject*
-*addInputProjectName*
-*newProjects*
-+ `renderProjectTodos()` is the name of the static method
-that gets called when the only `UI` object its
-instantiated. 
-+ Its used too as a callback function for the 
-tab inbox --if inbox tab is clicked, the inbox method gets called.
-+ Inside `renderProjectTodos()`, the first thing is removing all
-content of the previous view. 
-Then, I create a to hold the current page, meaning which button
-the user has clicked. 
-+ As the method handles event objects and strings, I test for that.
-When deleting any project, the app will back off to the inbox
-default project. In that case, the `thisPageState` will be undefine.
-I handle that by testing for it. 
-+ Using that variable, the method show corresponding tab as selected
-+ Then, the status of the current page is updated --`updateStatus()`.
-+ Call `showHeader()` and show tab header according to current tab.
-+ This is where the method connnects with the _Storage class through 
-the controller (App).
-*renderProjectTodos and its connection to projects/storage*:
-+ See `renderProjectTodos()` in *UX-UI* to understand what 
-the method does until it connects withe the Project/Storage
-functionality. 
-+ This is where the `renderProjectTodos()` method and the
-project/storage functionalities  connect. When calling the
-  `renderProjectTodos()` method, todos of all projects (not today
-  and thisweek) need to be rendered into the page accoring to
-  the corresponding page. With that goal in
-mind, `renderProjectTodos()` will loop over the returned 
-todos and put them on the page.
-
-+ It hides the button New Projects,
 
 ### Non-Functional requirements | 
 1. Set css up to remove margins and make the body to take the 
