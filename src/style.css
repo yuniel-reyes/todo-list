@@ -101,7 +101,7 @@ input[type='button'] {
     gap: 6px;
 }
 
-.todo-header {
+div.todo-header {
     margin-left: 30px;
     font-size: 20px;
 }
